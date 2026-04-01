@@ -1,0 +1,43 @@
+---
+title: "Project 1 Checkpoint 1"
+author: "Amanda Dong"
+format: html
+---
+
+## Measles Dataset
+
+We are provided with data from the World Health Organization on measles and 
+rubella cases across the world from the years 2018 through 2026. The total amount
+of measles and rubella cases have been recorded. This includes suspected cases
+and lab confirmed cases. We are given the data in two time frames: by month and
+by year.
+
+## How was the dataset cleaned?
+
+The names of the variables were cleaned using the janitor package.
+
+## Possible Research Questions
+**With the given Data:**
+
+Two possible research questions we can investigate using the given data:
+
+  1. What regions/countries tend to have more measles and rubella cases?
+  
+  2. Do the number of cases change depending on the time of year?
+  
+**With Supplemental Data:**
+
+  1. How does access to healthcare affect the number of measles and rubella cases?
+  
+  2. Do higher populated areas tend to have more cases of measles and rubella?
+  
+## Data Visualization Sketches
+What regions tend to have more measles and rubella cases?
+```{r, echo = FALSE}
+knitr::include_graphics('/Users/amandadong/Documents/stat 431/project1/graph1.png')
+```
+
+Do higher populated areas tend to have more cases of measles and rubella?
+```{r, echo = FALSE}
+knitr::include_graphics('/Users/amandadong/Documents/stat 431/project1/graph2.png')
+```
