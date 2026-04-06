@@ -32,12 +32,12 @@ Two possible research questions we can investigate using the given data:
   2. Do higher populated areas tend to have more cases of measles and rubella?
   
 ## Data Visualization Sketches
-What regions tend to have more measles and rubella cases?
+What regions tend to have more measles and rubella cases?:
 ```{r, echo = FALSE}
 knitr::include_graphics('/Users/amandadong/Documents/stat 431/project1/graph1.png')
 ```
 
-Do higher populated areas tend to have more cases of measles and rubella?
+Do higher populated areas tend to have more cases of measles and rubella?:
 ```{r, echo = FALSE}
 knitr::include_graphics('/Users/amandadong/Documents/stat 431/project1/graph2.png')
 ```
