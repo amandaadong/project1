@@ -144,28 +144,27 @@ dbl (16): year, total_population, annualized_population_most_recent_year_onl...
 <section id="do-the-number-of-measles-cases-change-depending-on-the-time-of-year" class="level3">
 <h3 class="anchored" data-anchor-id="do-the-number-of-measles-cases-change-depending-on-the-time-of-year">Do the number of measles cases change depending on the time of year?</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>avg_per_month <span class="ot">&lt;-</span> cases_month <span class="sc">|&gt;</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(month) <span class="sc">|&gt;</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_measles =</span> <span class="fu">mean</span>(measles_total, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>avg_per_month</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 12 × 2
-   month mean_measles
-   &lt;dbl&gt;        &lt;dbl&gt;
- 1     1        196. 
- 2     2        223. 
- 3     3        242. 
- 4     4        187. 
- 5     5        153. 
- 6     6        108. 
- 7     7         83.9
- 8     8         73.5
- 9     9         69.0
-10    10         76.6
-11    11         91.0
-12    12         92.7</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>monthlyStats <span class="ot">&lt;-</span> <span class="cf">function</span>(monthly_measles) {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">mean_measles =</span> <span class="fu">mean</span>(monthly_measles, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">median_measles =</span> <span class="fu">median</span>(monthly_measles, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">max_measles =</span> <span class="fu">max</span>(monthly_measles, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>measles_by_month <span class="ot">&lt;-</span> <span class="fu">tibble</span>()</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>) {</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  monthly_measles <span class="ot">&lt;-</span> cases_month <span class="sc">|&gt;</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(month <span class="sc">==</span> i) <span class="sc">|&gt;</span> </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pull</span>(measles_total)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  measles_by_month <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(measles_by_month, </span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>                                <span class="fu">monthlyStats</span>(monthly_measles) <span class="sc">|&gt;</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>                                  <span class="fu">mutate</span>(<span class="at">month =</span> i))</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>measles_by_month <span class="ot">&lt;-</span> measles_by_month <span class="sc">|&gt;</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(month, mean_measles, median_measles, max_measles)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</div>
+<p>According to our resulting summaries, it appears the number of measles cases tends to be the most during the beginning of the year (January - March), while the number of cases seems to be the lowest during the transition between summer and fall (August - October). However, it’s important to keep in mind that these are summaries over the last 9 years, and include cases all over the world (and seasons/environment are different depending on location).</p>
 </section>
 </section>
 

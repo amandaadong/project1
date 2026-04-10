@@ -14,8 +14,25 @@ cases_year <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience
 ## Using existing columns
 ### Do the number of measles cases change depending on the time of year?
 ```{r}
-avg_per_month <- cases_month |>
-  group_by(month) |>
-  summarize(mean_measles = mean(measles_total, na.rm = TRUE))
-avg_per_month
+monthlyStats <- function(monthly_measles) {
+  tibble(mean_measles = mean(monthly_measles, na.rm = TRUE),
+         median_measles = median(monthly_measles, na.rm = TRUE),
+         max_measles = max(monthly_measles, na.rm = TRUE))
+}
+
+measles_by_month <- tibble()
+
+for (i in 1:12) {
+  monthly_measles <- cases_month |>
+    filter(month == i) |> 
+    pull(measles_total)
+  
+  measles_by_month <- bind_rows(measles_by_month, 
+                                monthlyStats(monthly_measles) |>
+                                  mutate(month = i))
+}
+measles_by_month <- measles_by_month |>
+  select(month, mean_measles, median_measles, max_measles)
 ```
+According to our resulting summaries, it appears the number of measles cases tends to
+be the most during the beginning of the year (January - March), while the number of cases seems to be the lowest during the transition between summer and fall (August - October). However, it's important to keep in mind that these are summaries over the last 9 years, and include cases all over the world (and seasons/environment are different depending on location).
