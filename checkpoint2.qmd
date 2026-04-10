@@ -1,0 +1,12 @@
+---
+title: "checkpoint 2"
+format: html
+---
+
+## Measles Dataset
+
+```{r}
+library("tidyverse")
+cases_month <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-06-24/cases_month.csv')
+cases_year <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-06-24/cases_year.csv')
+```
