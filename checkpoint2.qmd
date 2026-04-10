@@ -10,3 +10,12 @@ library("tidyverse")
 cases_month <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-06-24/cases_month.csv')
 cases_year <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-06-24/cases_year.csv')
 ```
+
+## Using existing columns
+### Do the number of measles cases change depending on the time of year?
+```{r}
+avg_per_month <- cases_month |>
+  group_by(month) |>
+  summarize(mean_measles = mean(measles_total, na.rm = TRUE))
+avg_per_month
+```
