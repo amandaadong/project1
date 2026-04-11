@@ -1,5 +1,6 @@
 ---
 title: "checkpoint 2"
+author: Amanda Dong, Zita Tam, Natalie Carthwright, Aryan Nair
 format: html
 ---
 
@@ -36,3 +37,69 @@ measles_by_month <- measles_by_month |>
 ```
 According to our resulting summaries, it appears the number of measles cases tends to
 be the most during the beginning of the year (January - March), while the number of cases seems to be the lowest during the transition between summer and fall (August - October). However, it's important to keep in mind that these are summaries over the last 9 years, and include cases all over the world (and seasons/environment are different depending on location).
+
+### Which method of finding measles cases finds the most measeles cases?
+```{r}
+max <- nrow(cases_year)
+
+for (i in 1:nrow(cases_year)) {
+  lab <- cases_year$measles_lab_confirmed[i]
+  epi <- cases_year$measles_epi_linked[i]
+  clinic <- cases_year$measles_clinical[i]
+
+  if (lab >= epi & lab >= clinic){
+    max[i] <- "lab"
+    
+  } else if (epi >= lab & epi >= clinic) {
+    max[i] <- "epi"
+    
+  } else {
+    max[i] <- "clinic"
+  }
+  
+}
+
+max_tbl <- tibble(method = max)
+
+sum_prop <- max_tbl |> 
+  group_by(method)|> 
+  summarise(count = n(), prop = n() / nrow(max_tbl))
+
+sum_prop
+```
+According to my summary table, the method of confirming
+measles cases by the lab results in finding the most measles
+cases. Around 79% of cases of measles were found by confirming
+it in the lab. 
+
+## Modifying Columns
+### Which country and region have the most measles and rubella cases combined?
+
+```{r}
+library(gt)
+total_country_cases <- cases_year |>
+  mutate(
+    across(c(measles_total, rubella_total), as.numeric)) |> # convert columns to numbers
+  group_by(region, country) |> # group by region and country
+  summarize(
+    total_measles = sum(measles_total),
+    total_rubella = sum(rubella_total),
+    .groups = "drop") |>
+  mutate(
+    total_cases = total_measles + total_rubella) |> # new column, measles and rubella cases combined
+arrange(desc(total_cases)) # sorts from highest to lowest cases
+
+total_country_cases |>
+  head(10) |>
+  gt() |>
+  
+  cols_label(
+    region = "Region",
+    country = "Country",
+    total_measles = "Total Measles Cases",
+    total_rubella = "Total Ruebella Cases",
+    total_cases = "Total Combined Cases"
+  ) 
+```
+
+Based on the data summary of the total combined cases of measles and rubella, India, China, and Madagascar are the top three countries (grouped by region) that have the most measles cases from the years 2018-2026.
