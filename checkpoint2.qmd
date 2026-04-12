@@ -103,3 +103,34 @@ total_country_cases |>
 ```
 
 Based on the data summary of the total combined cases of measles and rubella, India, China, and Madagascar are the top three countries (grouped by region) that have the most measles cases from the years 2018-2026.
+
+### Has the total number of reported measles cases increased or decreased over time globally?
+```{r}
+trend_label <- function(current, previous) {
+  pct_change <- (current - previous) / previous * 100
+  case_when(
+    pct_change < -20 ~ "declining",
+    pct_change >  20 ~ "surging",
+    .default = "stable"
+  )
+}
+
+yearly_summary <- cases_year |>
+  group_by(year) |>
+  summarise(
+    total_cases = sum(measles_total, na.rm = TRUE),
+    n_countries = n_distinct(country),
+    .groups = "drop"
+  ) |>
+  arrange(year) |>
+  mutate(
+    prev_total = lag(total_cases),
+    pct_change = round((total_cases - prev_total) / prev_total * 100, 1),
+    trend = trend_label(total_cases, prev_total)
+  ) |>
+  select(year, total_cases, n_countries, pct_change, trend)
+
+print(yearly_summary)
+```
+
+According to my summary table, global reported measles cases show an overall declining trend across the years in the dataset, with the most years labeled as declining or stable. Isolated surging years are visible. This points to a periodic resurgence likely tied to drops in vaccination coverage or large outbreaks in highly populated countries.
