@@ -141,35 +141,56 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.na</span>(country) <span class="sc">||</span> <span class="fu">is.na</span>(year)) {</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  country <span class="ot">&lt;-</span> <span class="fu">str_replace_all</span>(country, <span class="st">" "</span>, <span class="st">"%20"</span>)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  base_url <span class="ot">&lt;-</span> <span class="st">"https://api.api-ninjas.com/v1/gdp"</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  url <span class="ot">&lt;-</span> <span class="fu">str_c</span>(base_url, <span class="st">"?country="</span>, country, <span class="st">"&amp;year="</span>, year)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  raw_data <span class="ot">&lt;-</span> <span class="fu">GET</span>(url, <span class="fu">add_headers</span>(<span class="st">"X-Api-Key"</span> <span class="ot">=</span> my_key))</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  json_data <span class="ot">&lt;-</span> <span class="fu">rawToChar</span>(raw_data<span class="sc">$</span>content)</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  tidy_data <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(json_data)</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.data.frame</span>(tidy_data) <span class="sc">||</span> <span class="fu">nrow</span>(tidy_data) <span class="sc">==</span> <span class="dv">0</span>) {</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="st">"gdp_per_capita_nominal"</span> <span class="sc">%in%</span> <span class="fu">names</span>(tidy_data) <span class="sc">||</span> </span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(tidy_data<span class="sc">$</span>gdp_per_capita_nominal)) {</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">tibble</span>(</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">country =</span> country,</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">year =</span> year,</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">gdp_per_capita_nominal =</span> <span class="cn">NA</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    ))</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  gdps <span class="ot">&lt;-</span> tidy_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(country, year, gdp_per_capita_nominal)</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  country <span class="ot">&lt;-</span> <span class="fu">str_replace_all</span>(country, <span class="st">" "</span>, <span class="st">"%20"</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  base_url <span class="ot">&lt;-</span> <span class="st">"https://api.api-ninjas.com/v1/gdp"</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  url <span class="ot">&lt;-</span> <span class="fu">str_c</span>(base_url, <span class="st">"?country="</span>, country, <span class="st">"&amp;year="</span>, year)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  raw_data <span class="ot">&lt;-</span> <span class="fu">GET</span>(url, <span class="fu">add_headers</span>(<span class="st">"X-Api-Key"</span> <span class="ot">=</span> my_key))</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  json_data <span class="ot">&lt;-</span> <span class="fu">rawToChar</span>(raw_data<span class="sc">$</span>content)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  tidy_data <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(json_data)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.data.frame</span>(tidy_data) <span class="sc">||</span> <span class="fu">nrow</span>(tidy_data) <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="st">"gdp_per_capita_nominal"</span> <span class="sc">%in%</span> <span class="fu">names</span>(tidy_data) <span class="sc">||</span> </span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(tidy_data<span class="sc">$</span>gdp_per_capita_nominal)) {</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">tibble</span>(</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">country =</span> country,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">year =</span> year,</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">gdp_per_capita_nominal =</span> <span class="cn">NA</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    ))</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  gdps <span class="ot">&lt;-</span> tidy_data <span class="sc">%&gt;%</span> <span class="fu">select</span>(country, year, gdp_per_capita_nominal)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Let’s test the function using USA in 2019.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>usa <span class="ot">&lt;-</span> <span class="fu">get_gdp_data</span>(<span class="st">"United States"</span>, <span class="st">"2019"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>usa <span class="ot">&lt;-</span> <span class="fu">get_gdp_data</span>(<span class="st">"United States"</span>, <span class="st">"2019"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">get_gdp_data</span>(<span class="st">"hello"</span>, <span class="st">"yes"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NULL</code></pre>
+</div>
 </div>
 <p>Now we need to apply the function to all countries and years in our measles data.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>apply_data <span class="ot">&lt;-</span> cases_year <span class="sc">%&gt;%</span> <span class="fu">select</span>(country, year) <span class="sc">%&gt;%</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(country)) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(year))</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">map2_dfr</span>(<span class="at">.x =</span> apply_data<span class="sc">$</span>country, <span class="at">.y =</span> apply_data<span class="sc">$</span>year, <span class="at">.f =</span> get_gdp_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>apply_data <span class="ot">&lt;-</span> cases_year <span class="sc">%&gt;%</span> <span class="fu">select</span>(country, year) <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(country)) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(year))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># results1 &lt;- map2_dfr(.x = apply_data$country[1:500], .y = apply_data$year[1:500], .f = get_gdp_data)</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># results2 &lt;- map2_dfr(.x = apply_data$country[501:1000], .y = apply_data$year[501:1000], .f = get_gdp_data)</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># results3 &lt;- map2_dfr(.x = apply_data$country[1001:1500], .y = apply_data$year[1001:1500], .f = get_gdp_data)</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># results4 &lt;- map2_dfr(.x = apply_data$country[1501:2000], .y = apply_data$year[1501:2000], .f = get_gdp_data)</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># results5 &lt;- map2_dfr(.x = apply_data$country[2001:2380], .y = apply_data$year[2001:2380], .f = get_gdp_data)</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>results1<span class="sc">$</span>country_full <span class="ot">&lt;-</span> <span class="fu">countrycode</span>(results1<span class="sc">$</span>country, <span class="at">origin =</span> <span class="st">"iso3c"</span>, <span class="at">destination =</span> <span class="st">"country.name"</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>results2<span class="sc">$</span>country_full <span class="ot">&lt;-</span> <span class="fu">countrycode</span>(results2<span class="sc">$</span>country, <span class="at">origin =</span> <span class="st">"iso3c"</span>, <span class="at">destination =</span> <span class="st">"country.name"</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>results3<span class="sc">$</span>country_full <span class="ot">&lt;-</span> <span class="fu">countrycode</span>(results3<span class="sc">$</span>country, <span class="at">origin =</span> <span class="st">"iso3c"</span>, <span class="at">destination =</span> <span class="st">"country.name"</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>results3[<span class="dv">98</span>, <span class="dv">4</span>] <span class="ot">&lt;-</span> <span class="st">"Pakistan"</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>results4<span class="sc">$</span>country_full <span class="ot">&lt;-</span> <span class="fu">countrycode</span>(results4<span class="sc">$</span>country, <span class="at">origin =</span> <span class="st">"iso3c"</span>, <span class="at">destination =</span> <span class="st">"country.name"</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>results4[<span class="dv">101</span><span class="sc">:</span><span class="dv">110</span>, <span class="dv">4</span>] <span class="ot">&lt;-</span> <span class="st">"Montenegro"</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>results5<span class="sc">$</span>country_full <span class="ot">&lt;-</span> <span class="fu">countrycode</span>(results5<span class="sc">$</span>country, <span class="at">origin =</span> <span class="st">"iso3c"</span>, <span class="at">destination =</span> <span class="st">"country.name"</span>)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>GDP_APIdata <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(results1, results2, results3, results4, results5)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(GDP_APIdata, <span class="st">"GDPdata.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><strong>Brief description of new dataset</strong></p>
 <p>We now have a new dataframe (which I’ve named “results”) which contains 2380 rows with 3 variables. The 2380 rows correlate to the rows in “cases_year” (our original measles dataset) that have both country and year data. 2 of the variables in our new dataframe are country and year, while the last variable is “gdp_per_capita_nominal”. As the name suggests, this column contains the nominal GDP per capita for that country, in that year. This was taken from API Ninja’s dataset.</p>

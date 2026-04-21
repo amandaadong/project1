@@ -9,7 +9,7 @@ Setting my API ninja key!! (code hidden)
 
 ```{r}
 #| echo: false
-my_key <- "Ns3SCNuC1TBsYo1mnjT6DdA3DYrtu30sMwZDvCZF"
+my_key <- "GpzR11HILKq5OrK9rXSm7b9J0Fd4qvwfG6zu551Z"
 ```
 
 load in packages and dataset:
@@ -53,6 +53,7 @@ get_gdp_data <- function(country, year, key = my_key) {
   if (is.na(country) || is.na(year)) {
     return(NULL)
   }
+
   country <- str_replace_all(country, " ", "%20")
   base_url <- "https://api.api-ninjas.com/v1/gdp"
   url <- str_c(base_url, "?country=", country, "&year=", year)
@@ -78,6 +79,7 @@ get_gdp_data <- function(country, year, key = my_key) {
 Let's test the function using USA in 2019.
 ```{r}
 usa <- get_gdp_data("United States", "2019")
+get_gdp_data("hello", "yes")
 ```
 
 Now we need to apply the function to all countries and years in our measles data.
@@ -85,8 +87,23 @@ Now we need to apply the function to all countries and years in our measles data
 #| eval: false
 apply_data <- cases_year %>% select(country, year) %>%
   filter(!is.na(country)) %>% filter(!is.na(year))
-results <- map2_dfr(.x = apply_data$country, .y = apply_data$year, .f = get_gdp_data)
 
+# results1 <- map2_dfr(.x = apply_data$country[1:500], .y = apply_data$year[1:500], .f = get_gdp_data)
+# results2 <- map2_dfr(.x = apply_data$country[501:1000], .y = apply_data$year[501:1000], .f = get_gdp_data)
+# results3 <- map2_dfr(.x = apply_data$country[1001:1500], .y = apply_data$year[1001:1500], .f = get_gdp_data)
+# results4 <- map2_dfr(.x = apply_data$country[1501:2000], .y = apply_data$year[1501:2000], .f = get_gdp_data)
+# results5 <- map2_dfr(.x = apply_data$country[2001:2380], .y = apply_data$year[2001:2380], .f = get_gdp_data)
+
+results1$country_full <- countrycode(results1$country, origin = "iso3c", destination = "country.name")
+results2$country_full <- countrycode(results2$country, origin = "iso3c", destination = "country.name")
+results3$country_full <- countrycode(results3$country, origin = "iso3c", destination = "country.name")
+results3[98, 4] <- "Pakistan"
+results4$country_full <- countrycode(results4$country, origin = "iso3c", destination = "country.name")
+results4[101:110, 4] <- "Montenegro"
+results5$country_full <- countrycode(results5$country, origin = "iso3c", destination = "country.name")
+
+GDP_APIdata <- bind_rows(results1, results2, results3, results4, results5)
+write.csv(GDP_APIdata, "GDPdata.csv", row.names = FALSE)
 ```
 
 **Brief description of new dataset**
