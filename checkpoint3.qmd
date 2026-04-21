@@ -105,7 +105,10 @@ results5$country_full <- countrycode(results5$country, origin = "iso3c", destina
 GDP_APIdata <- bind_rows(results1, results2, results3, results4, results5)
 write.csv(GDP_APIdata, "GDPdata.csv", row.names = FALSE)
 ```
+```{r}
+GDP_APIdata <- read.csv("GDPdata.csv")
+```
 
 **Brief description of new dataset**
 
-We now have a new dataframe (which I've named "results") which contains 2380 rows with 3 variables. The 2380 rows correlate to the rows in "cases_year" (our original measles dataset) that have both country and year data. 2 of the variables in our new dataframe are country and year, while the last variable is "gdp_per_capita_nominal". As the name suggests, this column contains the nominal GDP per capita for that country, in that year. This was taken from API Ninja's dataset.
+We now have a new dataframe (which I've named "GDP_APIdata") which contains 2194 rows with 4 variables. The 2194 rows correlate to the rows in "cases_year" (our original measles dataset) that have both country and year data. 3 of the variables in our new dataframe are country (as both full names and abbreviated) and year, while the last variable is "gdp_per_capita_nominal". As the name suggests, this column contains the nominal GDP per capita for that country, in that year. For any country and year that did not have its nominal GDP per capita data available, their value is NA. All data was taken from API Ninja's dataset.

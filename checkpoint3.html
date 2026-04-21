@@ -192,8 +192,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>GDP_APIdata <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(results1, results2, results3, results4, results5)</span>
 <span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(GDP_APIdata, <span class="st">"GDPdata.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>GDP_APIdata <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"GDPdata.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 <p><strong>Brief description of new dataset</strong></p>
-<p>We now have a new dataframe (which I’ve named “results”) which contains 2380 rows with 3 variables. The 2380 rows correlate to the rows in “cases_year” (our original measles dataset) that have both country and year data. 2 of the variables in our new dataframe are country and year, while the last variable is “gdp_per_capita_nominal”. As the name suggests, this column contains the nominal GDP per capita for that country, in that year. This was taken from API Ninja’s dataset.</p>
+<p>We now have a new dataframe (which I’ve named “GDP_APIdata”) which contains 2194 rows with 4 variables. The 2194 rows correlate to the rows in “cases_year” (our original measles dataset) that have both country and year data. 3 of the variables in our new dataframe are country (as both full names and abbreviated) and year, while the last variable is “gdp_per_capita_nominal”. As the name suggests, this column contains the nominal GDP per capita for that country, in that year. For any country and year that did not have its nominal GDP per capita data available, their value is NA. All data was taken from API Ninja’s dataset.</p>
 </section>
 
 </main>
