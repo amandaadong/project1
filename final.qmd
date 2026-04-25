@@ -1,0 +1,59 @@
+---
+title: "Measles Across the Globe"
+author: "Natalie Cartwright, Zita Tam, Aryan Nair, Amanda Dong"
+format:
+  html:
+    embed-resources: true
+    code-fold: true
+    theme: flatly
+  
+---
+
+# Introduction
+The World Health Organization collects data on monthly measles and rubella cases across the world. We will be focusing on measles cases, as it's typically more severe and contagious compared to rubella. We were provided with data on suspected measles cases, confirmed cases, and total cases. The World Health Organization provides these counts for each country, and by two time frames: monthly and yearly (2012 to 2025).
+
+```{r}
+#| label: packages-setup
+#| message: false
+#| warning: false
+library(httr)
+library(tidyjson)
+library(jsonlite)
+library(tidyverse)
+library(stringr)
+library(gt)
+cases_month <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-06-24/cases_month.csv')
+cases_year <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-06-24/cases_year.csv')
+```
+
+## Has the total number of reported measles cases increased or decreased over time globally?
+
+To answer this question, we first needed to determine how each country's total number of measles cases was changing year-by-year. To do this, we compared each sequential year and categorized the change as declining (if the previous year had more cases), surging (if the previous year had less cases), and stable (if cases stayed relatively the same).
+
+```{r}
+trend_label <- function(current, previous) {
+  pct_change <- (current - previous) / previous * 100
+  case_when(
+    pct_change < -20 ~ "declining",
+    pct_change >  20 ~ "surging",
+    .default = "stable"
+  )
+}
+
+yearly_summary <- cases_year |>
+  group_by(year) |>
+  summarise(
+    total_cases = sum(measles_total, na.rm = TRUE),
+    n_countries = n_distinct(country),
+    .groups = "drop"
+  ) |>
+  arrange(year) |>
+  mutate(
+    prev_total = lag(total_cases),
+    pct_change = round((total_cases - prev_total) / prev_total * 100, 1),
+    trend = trend_label(total_cases, prev_total)
+  ) |>
+  select(year, total_cases, n_countries, pct_change, trend)
+
+head(yearly_summary)
+```
